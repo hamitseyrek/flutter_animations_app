@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animations_app/my_home_page.dart';
 
-void main() {
+/* void main() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
         statusBarColor: Color(0xFF343442),
@@ -13,6 +13,10 @@ void main() {
   SystemChrome.setPreferredOrientations(
           [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown])
       .then((_) => runApp(const MyApp()));
+} */
+
+void main() {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

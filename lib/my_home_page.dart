@@ -9,9 +9,26 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   double? _screenHight, _screenWidht;
   bool _openMenu = false;
+  AnimationController? _controller;
+  Animation<double>? _scaleAnimation;
+  final Duration _duration = const Duration(microseconds: 5000);
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: _duration);
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.6).animate(_controller!);
+  }
+
+  @override
+  void dispose() {
+    _controller!.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,24 +90,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget createDashboard(BuildContext context) {
     return AnimatedPositioned(
-      top: _openMenu ? 0.15 * _screenHight! : 0,
-      bottom: _openMenu ? 0.15 * _screenHight! : 0,
+      top: 0,
+      bottom: 0,
       left: _openMenu ? 0.6 * _screenWidht! : 0,
       right: _openMenu ? -0.3 * _screenWidht! : 0,
-      duration: const Duration(milliseconds: 400),
-      child: Material(
-        borderRadius:
-            _openMenu ? const BorderRadius.all(Radius.circular(20)) : null,
-        elevation: 8,
-        color: const Color(0xFF343442),
-        child: Container(
-          padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
-          child: InkWell(
-            onTap: () {
-              setState(() {
-                _openMenu = false;
-              });
-            },
+      duration: _duration,
+      child: ScaleTransition(
+        scale: _scaleAnimation!,
+        child: Material(
+          borderRadius:
+              _openMenu ? const BorderRadius.all(Radius.circular(20)) : null,
+          elevation: 8,
+          color: const Color(0xFF343442),
+          child: Container(
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
             child: Column(
               children: [
                 Row(
@@ -99,6 +112,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     InkWell(
                       onTap: () {
                         setState(() {
+                          if (_openMenu) {
+                            _controller!.reverse();
+                          } else {
+                            _controller!.forward();
+                          }
                           _openMenu = !_openMenu;
                         });
                       },
@@ -111,9 +129,37 @@ class _MyHomePageState extends State<MyHomePage> {
                       'My Cards',
                       style: TextStyle(color: Colors.white, fontSize: 24),
                     ),
-                    Icon(Icons.add),
+                    const Icon(Icons.add),
                   ],
-                )
+                ),
+                Container(
+                    margin: const EdgeInsets.only(top: 15),
+                    height: 200,
+                    child: PageView(
+                      scrollDirection: Axis.horizontal,
+                      children: [
+                        Container(
+                          color: Colors.red,
+                          width: 100,
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                        ),
+                        Container(
+                          color: Colors.blue,
+                          width: 100,
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                        ),
+                        Container(
+                          color: Colors.amber,
+                          width: 100,
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                        ),
+                        Container(
+                          color: Colors.green,
+                          width: 100,
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                        ),
+                      ],
+                    )),
               ],
             ),
           ),
